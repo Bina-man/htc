@@ -113,7 +113,7 @@ class EmailService:
                     
                     <div class="content">
                         <p><strong>Request Details:</strong></p>
-                        <p><strong>Name:</strong> {name}</p>
+                        <p><strong>Name:</strong> {name or sender_email}</p>
                         <p><strong>Email:</strong> {sender_email}</p>
                         <p><strong>Message:</strong> {body}</p>
                     </div>
@@ -134,13 +134,13 @@ class EmailService:
 
 
 
-    def send_email(self, sender_email: str , receiver_email: str, subject: str,body: str):
+    def send_email(self, sender_email: str , receiver_email: str, subject: str,body: str, name: str = None):
         """
         Sends an email using the SMTP server.
         """
         try:
             # Create email
-            email_message = self.create_taxi_request_email(sender_email, receiver_email, subject, body, "Abera")
+            email_message = self.create_taxi_request_email(sender_email, receiver_email, subject, body, name)
 
             # Connect to SMTP server and send the email
             with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
