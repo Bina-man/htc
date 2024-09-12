@@ -1,31 +1,42 @@
 import os
-from fastapi import APIRouter, Depends
-from models import EmailRequest
+from typing import Optional
+from pydantic import BaseModel
+from fastapi import APIRouter
 from services.email_service import EmailService
 
 router = APIRouter()
 
-# @router.post("/send_email", response_model=None)
-# async def send_email(email_request: EmailRequest):
-#     response = email_service.send_email(
-#         sender_email=email_request.sender_email,
-#         receiver_email=email_request.receiver_email,
-#         subject=email_request.subject,
-#         body=email_request.body
-#     )
-#     return response
+class HTCTaxi(BaseModel):
+    name:  Optional[str]
+    email: Optional[str]
+    body: str
 
-
-import os
+@router.post("/send_email", response_model=None)
+async def send_email(email_request: HTCTaxi):
+    email_password = os.getenv('EMAIL_PASSWORD', 'default_password')
+    base_email = os.getenv('BASE_EMAIL', 'binyamsisay01@gmail.com')
+    
+    email_service = EmailService(
+        smtp_server="smtp.gmail.com",
+        smtp_port=587,
+        email_user=base_email,
+        email_password=email_password
+    )
+    
+    response = email_service.send_email(
+        sender_email=email_request.email,
+        receiver_email='binasisayet8790@gmail.com',
+        subject="Taxi Request",
+        body=email_request.body
+    )
+    
+    return response
 
 @router.get("/checkemailsend/{sender_email}")
 async def check_email_send(sender_email: str):
     try:
-        # Get email credentials from environment variables
-        email_password = os.getenv('EMAIL_PASSWORD', 'default_password')  # Provide default as fallback
-        base_email = os.getenv('BASE_EMAIL', 'binyamsisay01@gmail.com')   # Provide default as fallback
-
-        # Initialize the EmailService with credentials from environment variables
+        email_password = os.getenv('EMAIL_PASSWORD', 'default_password')
+        base_email = os.getenv('BASE_EMAIL', 'binyamsisay01@gmail.com') 
         email_service = EmailService(
             smtp_server="smtp.gmail.com",
             smtp_port=587,
