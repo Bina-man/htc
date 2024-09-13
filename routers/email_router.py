@@ -25,7 +25,7 @@ async def send_email(email_request: HTCTaxi):
     
     response = email_service.send_email(
         sender_email=email_request.email,
-        receiver_email='binasisayet8790@gmail.com',
+        receiver_email='greathouston2025@gmail.com',
         subject="Taxi Request",
         body=email_request.body,
         name = email_request.name
