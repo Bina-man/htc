@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from datetime import datetime
+from fastapi import FastAPI, Request
 from routers import email_router
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -24,3 +25,14 @@ app.include_router(email_router.router)
 @app.get("/check")
 async def check():
     return {"message": "The email service is running!"}
+
+@app.get("/tracking_pixel")
+async def track_open(request: Request, id: str):
+    # Log request information (IP address, User-Agent, Time, etc.)
+    log_entry = {
+        "id": id,
+        "ip": request.client.host,
+        "user_agent": request.headers.get('User-Agent'),
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    print(f"Tracked pixel accessed: {log_entry}")
